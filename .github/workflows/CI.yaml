@@ -1,0 +1,52 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_PROFILE: prod
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17 and cache Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build and run tests
+        run: ./mvnw --batch-mode -ntp clean verify -Pprod
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: url-shortener-jar
+          path: target/*.jar
+
+      - name: Generate site reports from existing XML
+        if: ${{ failure() }}
+        run: ./mvnw --batch-mode -ntp site -DskipTests
+
+      - name: Upload test reports
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            **/target/surefire-reports/*.xml
+            **/target/failsafe-reports/TEST-*.xml
+            **/target/site/**
+          if-no-files-found: warn
