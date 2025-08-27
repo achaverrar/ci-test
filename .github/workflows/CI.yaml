@@ -28,7 +28,7 @@ jobs:
           cache: 'maven'
 
       - name: Build and run tests
-        run: ./mvnw --batch-mode -ntp clean verify -Pprod
+        run: mvnw --batch-mode -ntp clean verify -Pprod
 
       - name: Upload app artifact
         uses: actions/upload-artifact@v4
@@ -38,7 +38,7 @@ jobs:
 
       - name: Generate site reports from existing XML
         if: ${{ failure() }}
-        run: ./mvnw --batch-mode -ntp site -DskipTests
+        run: mvnw --batch-mode -ntp site -DskipTests
 
       - name: Upload test reports
         if: ${{ failure() }}
