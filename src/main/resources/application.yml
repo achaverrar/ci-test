@@ -1,0 +1,34 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: url-shortener
+  profiles:
+    active: "@profileActive@"
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  application:
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"

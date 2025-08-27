@@ -1,0 +1,31 @@
+/postgres
+.env
+.env.*
+/.git
+.gitignore
+.gitattributes
+.dockerignore
+docker-compose.yaml
+/docs
+README.md
+
+.DS_Store
+Thumbs.db
+
+# Java
+/target
+/build
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE / editor files
+/.idea
+/.vscode
+*.iml
+/.settings
+.classpath
+.project
+.factorypath
